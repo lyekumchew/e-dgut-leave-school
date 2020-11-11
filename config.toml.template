@@ -1,0 +1,10 @@
+Username = "你的学号"
+Password = " 你的密码"
+ReturnRoute = " 返校路线"
+ReturnRtransportation = "返校交通工具"
+LeaveRoute = "离校路线"
+LeaveTransportation = "离校交通工具"
+Location = "{\"street\":\"\",\"province\":\"44\",\"city\":\"4401\",\"district\":\"440111\"}" # 广东省东莞市
+ParentsPhone = "父母电话"
+LeaveReason = "探亲"
+Contact = "你的电话"
