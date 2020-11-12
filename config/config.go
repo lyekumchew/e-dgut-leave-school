@@ -16,6 +16,7 @@ type Config struct {
 	ParentsPhone          string
 	LeaveReason           string
 	Contact               string
+	SCKey                 string
 }
 
 func (c *Config) Get() error {

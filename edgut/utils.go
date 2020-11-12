@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/lyekumchew/e-dgut-leave-school/common"
 	"github.com/lyekumchew/e-dgut-leave-school/config"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
@@ -24,6 +25,7 @@ const (
 	getUserInfoUrl           = "http://e.dgut.edu.cn/api/cas/getUserInfo"
 	applyUrl                 = "http://e.dgut.edu.cn/ibps/business/v3/bpm/instance/start"
 	defId                    = "758369743466921984"
+	scUrl                    = "https://sc.ftqq.com/"
 )
 
 type EDGUTClient struct {
@@ -148,7 +150,7 @@ func fetch(method, _url, token string, headers ...Header) (s string, err error) 
 	return string(contents), nil
 }
 
-func (e *EDGUTClient) Do() {
+func (e *EDGUTClient) Do() error {
 	contents, _ := fetch("GET", getUserInfoUrl, e.token)
 	orgId := gjson.Get(contents, "info.orgs.id").String()
 
@@ -204,8 +206,13 @@ func (e *EDGUTClient) Do() {
 	res, _ := ioutil.ReadAll(resp.Body)
 
 	if strings.Contains(string(res), "流程启动成功") {
-
+		common.SCMsg("流程启动成功", "", e.Config.SCKey)
+		common.Logger("流程启动成功", 0)
 	} else {
-		// TODO: handle error
+		common.SCMsg("流程启动失败", string(res), e.Config.SCKey)
+		common.Logger("流程启动失败"+string(res), 1)
+		return errors.New("流程启动失败: " + string(res))
 	}
+
+	return nil
 }
