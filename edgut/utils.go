@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/lyekumchew/e-dgut-leave-school/config"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
@@ -23,8 +22,8 @@ const (
 	getBoDataUrl             = "http://e.dgut.edu.cn/api/adminhome/getBoData"
 	getFormDataUrl           = "http://e.dgut.edu.cn/ibps/business/v3/bpm/instance/getFormData"
 	getUserInfoUrl           = "http://e.dgut.edu.cn/api/cas/getUserInfo"
-	defId                    = "758369743466921984"
 	applyUrl                 = "http://e.dgut.edu.cn/ibps/business/v3/bpm/instance/start"
+	defId                    = "758369743466921984"
 )
 
 type EDGUTClient struct {
@@ -111,8 +110,6 @@ func (e *EDGUTClient) Login() (err error) {
 		return errors.New("cas login error, msg: " + string(contents2))
 	}
 
-	fmt.Println(string(contents2))
-
 	// access token
 	re = regexp.MustCompile(`"info":"(.*?)"}`)
 	res = re.FindAllStringSubmatch(string(contents2), -1)
@@ -129,8 +126,6 @@ func (e *EDGUTClient) Login() (err error) {
 	if e.token == "" {
 		return errors.New("fetch the access token error")
 	}
-
-	fmt.Println(e.token)
 
 	return nil
 }
@@ -156,22 +151,17 @@ func fetch(method, _url, token string, headers ...Header) (s string, err error) 
 func (e *EDGUTClient) Do() {
 	contents, _ := fetch("GET", getUserInfoUrl, e.token)
 	orgId := gjson.Get(contents, "info.orgs.id").String()
-	fmt.Println(orgId)
 
 	contents, _ = fetch("GET", getFormDataUrl+"?defId="+defId, e.token)
-	//fmt.Println(contents)
 	re := regexp.MustCompile(`code=(.*?)&`)
 	code := re.FindAllStringSubmatch(contents, -1)[0][1]
-	fmt.Println(code)
 
-	contents, _ = fetch("GET", "?code="+code+"&field=xue_yuan_&value="+orgId, e.token)
-	shenPiRen := gjson.Get(contents, "info.0.shen_pi_ren_").String()
-	fmt.Println(shenPiRen)
+	contents, _ = fetch("GET", getBoDataUrl+"?code="+code+"&field=xue_yuan_&value="+orgId, e.token)
+	approvers := gjson.Get(contents, "info.0.shen_pi_ren_").String()
 
 	contents, _ = fetch("GET", studentLeaveOnLoadDaoUrl, e.token, Header{Key: "Origin", Value: homeUrl})
 	major := gjson.Get(contents, "data.dataResult.major").String()
 	class := gjson.Get(contents, "data.dataResult.classes").String()
-	fmt.Println(major, class)
 
 	today := time.Now().Format("2006-1-2")
 
@@ -181,17 +171,17 @@ func (e *EDGUTClient) Do() {
 	e.Data.Parameters[1].Key = "version"
 	e.Data.Parameters[1].Value = "0"
 	e.Data.Parameters[2].Key = "data"
-	e.Data.Parameters[2].Value = Value{
+	value := Value{
 		XueHao:              e.Config.Username,
-		ShenPiRen:           shenPiRen,
+		ShenPiRen:           approvers,
 		BaiMingDanQuanXian:  "C",
 		FanXiaoLuXian:       e.Config.ReturnRoute,
 		FanXiaoChengZuoJTGJ: e.Config.ReturnRtransportation,
 		LiXiaoLuXian:        e.Config.LeaveRoute,
 		LiXiaoChengZuoJTGJ:  e.Config.LeaveTransportation,
 		JiaTingZhuZhi:       e.Config.Location,
-		JiaChangDianHua:     "test",
-		QingJiaYuanYin:      "wu",
+		JiaChangDianHua:     e.Config.ParentsPhone,
+		QingJiaYuanYin:      "原因详细",
 		LiXiaoMuDiDi:        e.Config.Location,
 		QingJiaLeiXing:      e.Config.LeaveReason,
 		QingJiaTianShu:      0,
@@ -202,7 +192,9 @@ func (e *EDGUTClient) Do() {
 		ZhuanYe:             major,
 		Id:                  "",
 	}
-	j, _ := json.Marshal(e.Data)
+	j, _ := json.Marshal(value)
+	e.Data.Parameters[2].Value = string(j)
+	j, _ = json.Marshal(e.Data)
 
 	req, _ := http.NewRequest("POST", applyUrl, bytes.NewBuffer(j))
 	req.Header.Set("Content-Type", "application/json;charset=UTF-8")
@@ -210,5 +202,10 @@ func (e *EDGUTClient) Do() {
 	resp, _ := client.Do(req)
 	defer resp.Body.Close()
 	res, _ := ioutil.ReadAll(resp.Body)
-	fmt.Println(res)
+
+	if strings.Contains(string(res), "流程启动成功") {
+
+	} else {
+		// TODO: handle error
+	}
 }
