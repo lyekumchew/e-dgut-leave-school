@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-var cronJob = flag.Bool("-cron", false, "是否启用 cronjob，默认为是，否则只运行一次")
+var cronJob = flag.Bool("-cron", false, "是否启用 cronjob，默认为否")
 
 func do(conf config.Config) {
 	e := edgut.EDGUTClient{Config: conf}

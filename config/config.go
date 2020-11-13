@@ -15,6 +15,7 @@ type Config struct {
 	Location              string
 	ParentsPhone          string
 	LeaveReason           string
+	ReasonDetails         string
 	Contact               string
 	SCKey                 string
 }

@@ -183,7 +183,7 @@ func (e *EDGUTClient) Do() error {
 		LiXiaoChengZuoJTGJ:  e.Config.LeaveTransportation,
 		JiaTingZhuZhi:       e.Config.Location,
 		JiaChangDianHua:     e.Config.ParentsPhone,
-		QingJiaYuanYin:      "原因详细",
+		QingJiaYuanYin:      e.Config.ReasonDetails,
 		LiXiaoMuDiDi:        e.Config.Location,
 		QingJiaLeiXing:      e.Config.LeaveReason,
 		QingJiaTianShu:      0,

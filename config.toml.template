@@ -7,5 +7,6 @@ LeaveTransportation = "离校交通工具"
 Location = '{"street":"","province":"44","city":"4401","district":"440111"}' # 广东省/广州市/白云区
 ParentsPhone = "父母电话"
 LeaveReason = "探亲"
+ReasonDetails = "无"
 Contact = "你的电话"
 SCKey = "xxx"
