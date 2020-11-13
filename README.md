@@ -1,5 +1,12 @@
 # e-dgut-leave-school
 
-[edgut 地址对照表](https://gist.github.com/lyekumchew/bbc0d7eb42380b4f4e9ed4a3be12a6f7)
+[地址对照参考表](https://gist.github.com/lyekumchew/bbc0d7eb42380b4f4e9ed4a3be12a6f7)
 
-flag: -cron=false [default: false]
+
+## 使用方法
+
+**config.toml.template** -> **config.toml**
+
+### 每日自动运行
+
+`-cron=true [default: false]`
