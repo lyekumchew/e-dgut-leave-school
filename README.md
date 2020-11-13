@@ -9,4 +9,6 @@
 
 ### 每日自动运行
 
-`-cron=true [default: false]`
+`--cron=true`
+
+tips: 程序默认为 `false`, docker image 默认为 `true`
