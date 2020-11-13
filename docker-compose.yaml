@@ -2,7 +2,7 @@ version: "3.1"
 
 services:
   edgut:
-    build: .
+    image: ghcr.io/lyekumchew/e-dgut-leave-school:latest
     volumes:
       - ./config.toml:/app/config.toml
     restart: unless-stopped
