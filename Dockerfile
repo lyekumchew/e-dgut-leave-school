@@ -23,4 +23,4 @@ RUN apk add --no-cache tzdata \
     && echo "Asia/Shanghai" > /etc/timezone \
     && rm -rf /var/cache/apk/*
 
-ENTRYPOINT ["/app/edgut-client", "--cron=true"]
+ENTRYPOINT ["/app/edgut-client", "-cron"]
