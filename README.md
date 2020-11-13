@@ -9,6 +9,4 @@
 
 ### 每日自动运行
 
-`--cron=true`
-
-tips: 程序默认为 `false`, docker image 默认为 `true`
+`docker-compose up -d`
