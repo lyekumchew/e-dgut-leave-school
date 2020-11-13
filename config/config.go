@@ -12,7 +12,6 @@ type Config struct {
 	ReturnRtransportation string
 	LeaveRoute            string
 	LeaveTransportation   string
-	Location              string
 	ParentsPhone          string
 	LeaveReason           string
 	ReasonDetails         string
